@@ -19,6 +19,7 @@ class Fragment extends Circle
 
     update(dt)
     {
+        this.v = this.v.scalar(0.999);
         this.t.pos = this.t.pos.add(this.v.scalar(dt));
 
         if (this.collide) this.updateBounds();
@@ -29,7 +30,7 @@ class Fragment extends Circle
         {
             this.alpha = this.lifespan/0.5;
         }
-
+        
         if (this.lifespan <= 0)
         {
             this.explode(this.sc);
