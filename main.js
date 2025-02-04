@@ -85,7 +85,7 @@ const update = (dt) =>
 
 const render = () =>
 {
-    rr.fillBackground("black", 0.5);
+    rr.fillBackground("black", 0.25);
 
     scene.render(rr);
 

@@ -20,6 +20,9 @@ class Fragment extends Circle
     update(dt)
     {
         this.t.pos = this.t.pos.add(this.v.scalar(dt));
+
+        if (this.collide) this.updateBounds();
+
         this.lifespan -= dt;
 
         if (this.lifespan <= 0.5 && this.lifespan > 0)
