@@ -59,7 +59,17 @@ class Scene
                 if (section[i].collide) for (let j = i+1; j < section.length; j++)
                 {
                     if (section[j].collide && !(section[i].type == "frag" && section[j].type == "frag") && section[i].collider.collidesWith(section[j].collider))
+                    {
+                        if (!section[i].anchor)
+                        {
+                            // Vector in between circles
+                            const v = section[i].t.pos.sub(section[j].t.pos);
+                            const d = section[i].t.radius+section[j].t.radius - v.mag();
+
+                            section[i].t.pos = section[i].t.pos.add(v.normalized().scalar(d));
+                        }
                         arr.push(section[i],section[j]);
+                    }
                 }
             }
         }

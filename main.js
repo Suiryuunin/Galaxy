@@ -21,7 +21,7 @@ window.addEventListener("mousedown", (e) => {
         case 0:
         {
             let inPlanet = false;
-            const newRadius = Math.random()*8+1;
+            const newRadius = Math.random()*16+4;
             const mouseBounds = new R_Bound(new R_Transform2D(coords, new Vec2(1,1)));
             for (let i = 0; i < mouseBounds.sect1.length; i++)
             {
@@ -74,11 +74,13 @@ const update = (dt) =>
             planets.arr[j].applyForce(force);
         }
     }
-    toDestroy = scene.toExplode(toDestroy);
-    scene.explode(toDestroy, anchors, planets);
     
     for (let i = 0; i < 8; i++)
+    {
         scene.update(dt/8);
+        toDestroy = scene.toExplode(toDestroy);
+        scene.explode(toDestroy, anchors, planets);
+    }
     
 
 };

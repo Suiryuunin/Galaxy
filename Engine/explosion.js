@@ -7,7 +7,7 @@ class Fragment extends Circle
         this.lifespan = Math.random()+1;
         this.sc = sc;
         this.type = "frag";
-        this.v = new Vec2(Math.random()-0.5, Math.random()-0.5).normalized().scalar(Math.random()*128+128);
+        this.v = new Vec2(Math.random()-0.5, Math.random()-0.5).normalized().scalar(Math.random()*512+this.t.radius*16);
 
         sc.add(this);
     }
@@ -19,7 +19,7 @@ class Fragment extends Circle
 
     update(dt)
     {
-        this.v = this.v.scalar(0.999);
+        this.v = this.v.scalar(0.995);
         this.t.pos = this.t.pos.add(this.v.scalar(dt));
 
         if (this.collide) this.updateBounds();
@@ -40,7 +40,7 @@ class Fragment extends Circle
 
 function SpawnExplosion(sc, origin, mass)
 {
-    const fragmentCount = Math.random()*8+8;
+    const fragmentCount = Math.random()*16+16;
     let frags = [];
     for (let i = 0; i < fragmentCount; i++)
     {
