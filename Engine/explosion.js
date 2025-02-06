@@ -8,6 +8,7 @@ class Fragment extends Circle
         this.sc = sc;
         this.type = "frag";
         this.v = new Vec2(Math.random()-0.5, Math.random()-0.5).normalized().scalar(Math.random()*512+this.t.radius*16);
+        this.c = randomColor()
 
         sc.add(this);
     }

@@ -13,6 +13,10 @@ Anchor.initAnchor(anchors, 16);
 
 scene.init(Anchor);
 
+function randomColor()
+{
+    return `hsl(${Math.random()*60-30}, ${Math.random()*50+25}%, ${Math.random()*25+50}%)`;
+}
 
 window.addEventListener("mousedown", (e) => {
     const coords = rr.toCanvasCoords(e.pageX, e.pageY);
@@ -38,6 +42,7 @@ window.addEventListener("mousedown", (e) => {
 
             const tempPlanet = new Planet(coords, newRadius);
             tempPlanet.initMovable(planets, anchors.arr, scene);
+            tempPlanet.c = randomColor()
 
             return;
         }
@@ -54,8 +59,9 @@ window.addEventListener("mousedown", (e) => {
         case 2:
         {
             e.preventDefault();
-            const tempPlanet = new Planet(coords, 256);
-            tempPlanet.initAnchor(anchors, 16, scene);
+            const tempAnchor = new Planet(coords, 256);
+            tempAnchor.initAnchor(anchors, 16, scene);
+            tempAnchor.c = randomColor()
             return;
         }
     }
