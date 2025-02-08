@@ -55,3 +55,14 @@ class Vec2
         return new Vec2(this.x/v.x, this.y/v.y);
     }
 }
+
+class Vec4
+{
+    constructor(x,y,w,h)
+    {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+    }
+}

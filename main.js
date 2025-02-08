@@ -111,3 +111,5 @@ const E_main = new Engine(60,
 }
 
 );
+
+C_ENGINES.main = E_main;

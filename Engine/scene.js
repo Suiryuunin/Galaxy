@@ -84,6 +84,23 @@ class Scene
         }
     }
 
+    activate()
+    {
+        for (let i = 0; i < this.el.size(); i++)
+        {
+            const obj = this.el.arr[i];
+            if (obj.activate) obj.activate();
+        }
+    }
+    deactivate()
+    {
+        for (let i = 0; i < this.el.size(); i++)
+        {
+            const obj = this.el.arr[i];
+            if (obj.deactivate) obj.deactivate();
+        }
+    }
+
     update(dt)
     {
         this.cps = [];
