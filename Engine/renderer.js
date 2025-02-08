@@ -64,34 +64,32 @@ class Renderer
         return this.ctx.measureText(word)["width"];
     }
 
-    drawWord(word, x, y, o = {x:0,y:0}, border = true, size = 16, color = this.color, alpha = 1, linesMargin = 1)
+    write(word, color = this.color, pos, size = 16, o = new Vec2(0,0), l = 0, border = false, alpha = 1, linesMargin = 1)
     {
-        this.ctx.globalAlpha = alpha;
-        this.ctx.lineWidth = 1;
+        this.ctx[l].globalAlpha = alpha;
+        this.ctx[l].lineWidth = 1;
 
-        this.ctx.font = `${size}px ${this.font}`;
+        this.ctx[l].font = `${size}px ${this.font}`;
         let w = 0;
         let widths = [];
         for (let i = 0; i < word.length; i++)
         {
-            w = Math.max(w, widths[i] = this.ctx.measureText(word[i])["width"]);
+            w = Math.max(w, widths[i] = this.ctx[l].measureText(word[i])["width"]);
         }
         
-        this.ctx.fillStyle = color;
+        this.ctx[l].fillStyle = color;
 
         for (let i = 0; i < word.length; i++)
-        {
-            this.ctx.fillText(word[i], x + widths[i] * o.x, i*linesMargin + y - size*o.y/1.5, w);
-        }
+            this.ctx[l].fillText(word[i], pos.x + widths[i] * o.x, i*linesMargin + pos.y - size*o.y/1.5, w);
 
         if (border)
         {
-            this.ctx.strokeStyle = color;
-            this.ctx.beginPath();
-            this.ctx.rect(x + w * o.x, y + o.y, w + 8, size * word.length);
-            this.ctx.stroke();
+            this.ctx[l].strokeStyle = color;
+            this.ctx[l].beginPath();
+            this.ctx[l].rect(pos.x + w * o.x, pos.y + o.y, w + 8, size * word.length);
+            this.ctx[l].stroke();
         }
-        this.ctx.globalAlpha = 1;
+        this.ctx[l].globalAlpha = 1;
     }
 
     // drawImg({x, y, w, h, o}, {l,r,t,b}, img, alpha = 1, ro = 0, sx=1,sy=1)

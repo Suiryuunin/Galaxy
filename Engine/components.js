@@ -39,3 +39,25 @@ class Circle
             rr.strokeCircle(this.t.pos, this.t.radius, this.c, 0, true, 4, 1);
     }
 }
+
+class Word
+{
+    constructor(word, pos, size, color = "white", offset = new Vec2(0,0))
+    {
+        this.visible = true;
+        
+        this.word = word;
+        this.pos = pos;
+        this.size = size;
+        this.color = color
+        
+        this.offset = offset;
+    }
+
+    update() {}
+
+    render(rr)
+    {
+        rr.write(this.word, this.color, this.pos, this.size, this.offset);
+    }
+}

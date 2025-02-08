@@ -1,23 +1,22 @@
-const rr = new Renderer(document.querySelector("canvas"), 1);
-const scene = new Scene();
+// Init Scene
 
-let tempPos = new Vec2(0,0);
+const scene = new Scene();
 
 let anchors = new LinkedList(true);
 let planets = new LinkedList(true);
 let toDestroy = new LinkedList(true);
 
-const Anchor = new Planet(new Vec2(C_RES.x/2,C_RES.y/2), 256);
+let Anchor = new Planet(new Vec2(C_RES.x/2,C_RES.y/2), 256);
 Anchor.c = "red";
 Anchor.initAnchor(anchors, 16);
 
 scene.init(Anchor);
 
-function randomColor()
-{
-    return `hsl(${Math.random()*60-30}, ${Math.random()*50+25}%, ${Math.random()*25+50}%)`;
-}
+Anchor = undefined;
 
+
+
+// Inputs
 window.addEventListener("mousedown", (e) => {
     const coords = rr.toCanvasCoords(e.pageX, e.pageY);
     switch (e.button)
@@ -70,8 +69,20 @@ window.addEventListener("contextmenu", (e) => {
     e.preventDefault();
 });
 
-const update = (dt) =>
+
+
+  ///////////////
+ // Game Loop //
+///////////////
+
+// E_ for Engine
+const E_main = new Engine(60,
+
+// Update
+(dt) =>
 {
+    SpawnStar(scene, new Vec2(Math.random()*C_RES.x, Math.random()*C_RES.y), Math.random()*16);
+
     for (let i = 0; i < anchors.size(); i++)
     {
         for (let j = 0; j < planets.size(); j++)
@@ -87,27 +98,16 @@ const update = (dt) =>
         toDestroy = scene.toExplode(toDestroy);
         scene.explode(toDestroy, anchors, planets);
     }
-    
+},
 
-};
-
-const render = () =>
+// Render
+() =>
 {
     rr.fillBackground("black", 0.25);
 
     scene.render(rr);
 
     rr.render();
-};
+}
 
-const C_ENGINE = new Engine(60, update, render);
-C_ENGINE.start();
-
-const resize = () =>
-{
-    rr.resize(window.innerWidth, window.innerHeight, C_RES.y/C_RES.x);
-
-    rr.render();
-};
-addEventListener("load", () => {resize();});
-addEventListener("resize", resize);
+);
