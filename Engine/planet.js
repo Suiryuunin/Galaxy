@@ -90,7 +90,7 @@ class Planet extends Circle
     explode(sc, anchors = undefined, planets = undefined)
     {
         sc.deleteItem(this);
-        SpawnExplosion(sc, this.t.pos, this.mass);
+        SpawnExplosion(sc, this.t.pos, this.mass, fragCollide);
         if (this.anchor) anchors.deleteNode(this);
         else planets.deleteNode(this);
     }

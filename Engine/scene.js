@@ -80,7 +80,11 @@ class Scene
         for (const planet of toDestroy)
         {
             if (planet.id != 0 && !planet.anchor)
+            {
+                A_Crash(Math.round(Math.random()*3));
+
                 planet.explode(this, anchors, planets);
+            }
         }
     }
 

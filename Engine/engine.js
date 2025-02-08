@@ -2,6 +2,8 @@ class Engine
 {
     constructor (fps, update, render)
     {
+        this.running = false;
+        
         this.time = 0;
         this.timeStamp = 0;
         this.delta = 0;
@@ -45,11 +47,13 @@ class Engine
 
     start()
     {
+        this.running = true;
         this.animationRequest = window.requestAnimationFrame(this.run);
     }
 
     stop()
     {
+        this.running = false;
         window.cancelAnimationFrame(this.animationRequest);
     }
 }

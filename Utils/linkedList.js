@@ -70,7 +70,7 @@ class LinkedList
 
     pop()
     {
-        if (this.head.next)
+        // if (this.head.next)
             this.head = this.head.next;
     }
 

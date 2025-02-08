@@ -69,7 +69,7 @@ function pointCollideRect(point, R_Trans2D)
 
 class Button
 {
-    constructor(action = () =>{console.log("FOOL! This button doesn't do jack shit!!")}, word = [""], R_Trans2D, size = 16, cr, cw)
+    constructor(action = () =>{console.log("FOOL! This button doesn't do jack shit!!")}, word = [""], R_Trans2D, size = 16, cr = "white", cw = `hsl(${hue}deg, 75%, 75%)`)
     {
         this.visible = true;
 
@@ -88,11 +88,18 @@ class Button
 
             const tt = new R_Transform2D(this.t.pos.sub(this.t.dim.scalar(0.5)), this.t.dim);
             if (pointCollideRect(coords, tt))
+            {
+                A_Normal(Math.round(Math.random()*3));
+
                 action(this);
+            }
         };
     }
 
-    update() {}
+    update()
+    {
+        this.cw = `hsl(${hue}deg, 75%, 75%)`;
+    }
 
     activate()
     {
@@ -109,5 +116,83 @@ class Button
         rr.write(this.word, this.cw, this.t.pos, this.size, this.offset);
         const tt = new R_Transform2D(this.t.pos.sub(this.t.dim.scalar(0.5)), this.t.dim);
         // rr.strokeRect(new Vec4(tt.left(), tt.top(), this.t.dim.x, this.t.dim.y), this.cr, 0, true, 1);
+    }
+}
+
+class Slider
+{
+    constructor(value, max, R_Trans2D, cb = "white", cs = "white")
+    {
+        this.visible = true;
+
+        this.value = value;
+        this.max = max;
+        this.t = R_Trans2D;
+        this.cb = cb;
+        this.cs = cs;
+
+        this.sx = this.value/this.max*this.t.dim.x+this.t.pos.x;
+
+        this.updateCursor = (coords) =>
+        {
+            this.sx = coords.x;
+            if (this.sx < this.t.left())
+                this.sx = this.t.left();
+            if (this.sx > this.t.right())
+                this.sx = this.t.right();
+
+            this.value = Math.floor((this.sx-this.t.pos.x)/this.t.dim.x*this.max);
+        }
+
+        this.drag = (e) =>
+        {
+            A_Normal(Math.round(Math.random()*3));
+            
+            const coords = rr.toCanvasCoords(e.pageX, e.pageY);
+            this.updateCursor(coords);
+        }
+
+        this.event = (e) =>
+        {
+            const coords = rr.toCanvasCoords(e.pageX, e.pageY);
+
+            const tt = new R_Transform2D(new Vec2(this.t.pos.x-this.t.dim.y/2, this.t.pos.y - (this.t.dim.y*(0.5))), new Vec2(this.t.dim.x+this.t.dim.y, this.t.dim.y));
+            if (pointCollideRect(coords, tt))
+            {
+                A_Normal(Math.round(Math.random()*3));
+
+                this.updateCursor(coords);
+                window.addEventListener("mousemove", this.drag);
+            }
+        };
+
+        this.removeDrag = () =>
+        {
+            window.removeEventListener("mousemove", this.drag);
+        }
+    }
+
+    update() {}
+
+    activate()
+    {
+        window.addEventListener("mousedown", this.event);
+        window.addEventListener("mouseup", this.removeDrag);
+    }
+
+    deactivate()
+    {
+        window.removeEventListener("mousedown", this.event);
+        window.removeEventListener("mouseup", this.removeDrag);
+    }
+
+    render(rr)
+    {
+        const tt = new R_Transform2D(new Vec2(this.t.pos.x, this.t.pos.y - (this.t.dim.y*(0.5))), this.t.dim);
+        rr.fillRect(new Vec4(tt.left(), tt.top()+tt.dim.y/4, tt.dim.x, tt.dim.y/2), this.cb, 0, 0.1);
+        rr.fillRect(new Vec4(this.sx-this.t.dim.y/2, tt.top(), this.t.dim.y, this.t.dim.y), this.cs, 0, 0.1);
+        rr.strokeRect(new Vec4(this.sx-this.t.dim.y/2, tt.top(), this.t.dim.y, this.t.dim.y), this.cs, 0, true, 4);
+
+        rr.write([this.value], this.cs, this.t.pos.sub(new Vec2(32,0)), 32, new Vec2(-1,-0.5));
     }
 }

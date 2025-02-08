@@ -1,66 +1,101 @@
+"use strict";
+
 // Init Scene
 
-const scene = new Scene();
+const S_Game = new Scene();
 
 let anchors = new LinkedList(true);
 let planets = new LinkedList(true);
 let toDestroy = new LinkedList(true);
 
+
+const B_menu = new Button(() => {C_ENGINES.main.stop(); C_ENGINES.menu.start(); S_Game.deactivate(); S_Menu.activate();}, ["<"], new R_Transform2D(new Vec2(64,C_RES.y-64), new Vec2(64, 64)), 64);
+S_Game.init(B_menu);
+
 let Anchor = new Planet(new Vec2(C_RES.x/2,C_RES.y/2), 256);
-Anchor.c = "red";
 Anchor.initAnchor(anchors, 16);
 
-scene.init(Anchor);
+S_Game.add(Anchor);
 
-Anchor = undefined;
+
+function placeOrbiter(coords)
+{
+    let inPlanet = false;
+    const newRadius = Math.random()*16+4;
+    const mouseBounds = new R_Bound(new R_Transform2D(coords, new Vec2(1,1)));
+    for (let i = 0; i < mouseBounds.sect1.length; i++)
+    {
+        for (let j = 0; j < S_Game.cps[mouseBounds.sect1[i]].length; j++)
+        {
+            if (S_Game.cps[mouseBounds.sect1[i]][j].t.pos.sub(coords).mag() <= S_Game.cps[mouseBounds.sect1[i]][j].t.radius+newRadius)
+            {
+                inPlanet = true;
+                break;
+            }
+        }
+    }
+    if (inPlanet) return;
+
+    A_Normal(Math.round(Math.random()*3));
+
+    const tempPlanet = new Planet(coords, newRadius);
+    tempPlanet.initMovable(planets, anchors.arr, S_Game);
+    tempPlanet.c = randomColor();
+}
+function destroyAnchor(coords)
+{
+    let exploded = false;
+    for (const anchor of anchors.arr)
+    {
+        if (anchor.t.pos.sub(coords).mag() <= anchor.t.radius)
+        {
+            anchor.explode(S_Game, anchors, planets);
+            exploded = true;
+        }
+    }
+    if (exploded)
+    {
+        A_Destroy(Math.round(Math.random()*2));
+    }
+}
+function placeAnchor(coords)
+{
+    const tempAnchor = new Planet(coords, 256);
+    tempAnchor.initAnchor(anchors, 16, S_Game);
+    tempAnchor.c = randomColor();
+
+    A_Normal(Math.round(Math.random()*3));
+}
 
 
 
 // Inputs
 window.addEventListener("mousedown", (e) => {
+    if (!E_main.running) return;
+
     const coords = rr.toCanvasCoords(e.pageX, e.pageY);
     switch (e.button)
     {
         case 0:
         {
-            let inPlanet = false;
-            const newRadius = Math.random()*16+4;
-            const mouseBounds = new R_Bound(new R_Transform2D(coords, new Vec2(1,1)));
-            for (let i = 0; i < mouseBounds.sect1.length; i++)
-            {
-                for (let j = 0; j < scene.cps[mouseBounds.sect1[i]].length; j++)
-                {
-                    if (scene.cps[mouseBounds.sect1[i]][j].t.pos.sub(coords).mag() <= scene.cps[mouseBounds.sect1[i]][j].t.radius+newRadius)
-                    {
-                        inPlanet = true;
-                        break;
-                    }
-                }
-            }
-            if (inPlanet) return;
-
-            const tempPlanet = new Planet(coords, newRadius);
-            tempPlanet.initMovable(planets, anchors.arr, scene);
-            tempPlanet.c = randomColor()
+            placeOrbiter(coords);
 
             return;
         }
         case 1:
         {
             e.preventDefault();
-            for (const anchor of anchors.arr)
-            {
-                if (anchor.t.pos.sub(coords).mag() <= anchor.t.radius)
-                    anchor.explode(scene, anchors, planets);
-            }
+
+            destroyAnchor(coords);
+
             return;
         }
         case 2:
         {
             e.preventDefault();
-            const tempAnchor = new Planet(coords, 256);
-            tempAnchor.initAnchor(anchors, 16, scene);
-            tempAnchor.c = randomColor()
+
+            placeAnchor(coords);
+            
             return;
         }
     }
@@ -81,7 +116,7 @@ const E_main = new Engine(60,
 // Update
 (dt) =>
 {
-    SpawnStar(scene, new Vec2(Math.random()*C_RES.x, Math.random()*C_RES.y), Math.random()*16);
+    SpawnStar(S_Game, new Vec2(Math.random()*C_RES.x, Math.random()*C_RES.y), Math.random()*16);
 
     for (let i = 0; i < anchors.size(); i++)
     {
@@ -94,9 +129,9 @@ const E_main = new Engine(60,
     
     for (let i = 0; i < 8; i++)
     {
-        scene.update(dt/8);
-        toDestroy = scene.toExplode(toDestroy);
-        scene.explode(toDestroy, anchors, planets);
+        S_Game.update(dt/8);
+        toDestroy = S_Game.toExplode(toDestroy);
+        S_Game.explode(toDestroy, anchors, planets);
     }
 },
 
@@ -105,7 +140,7 @@ const E_main = new Engine(60,
 {
     rr.fillBackground("black", 0.25);
 
-    scene.render(rr);
+    S_Game.render(rr);
 
     rr.render();
 }
