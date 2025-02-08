@@ -35,7 +35,19 @@ const B_fragCol = new Button(
 }, ["yes"], new R_Transform2D(new Vec2(C_RES.x/2+224,C_RES.y/2-64), new Vec2(64, 32)), 32);
 
 const T_sfx = new Word(["sfx?"], new Vec2(C_RES.x/2-256,C_RES.y/2-16), 32, "white", new Vec2(0, -0.5));
-const B_sfx = new Button((_self) => {if (_self.word == "yes") _self.word = ["no"]; else _self.word = ["yes"];}, ["yes"], new R_Transform2D(new Vec2(C_RES.x/2+224,C_RES.y/2-16), new Vec2(64, 32)), 32);
+const B_sfx = new Button(
+    (_self) => {
+    if (_self.word == "yes")
+    {
+        _self.word = ["no"];
+        sound = false;
+    }
+    else
+    {
+        _self.word = ["yes"];
+        sound = true;
+    }
+}, ["yes"], new R_Transform2D(new Vec2(C_RES.x/2+224,C_RES.y/2-16), new Vec2(64, 32)), 32);
 
 const T_hue = new Word(["hue"], new Vec2(C_RES.x/2-256,C_RES.y/2+32), 32, "white", new Vec2(0, -0.5));
 const Sl_hue = new Slider(hue, 360, new R_Transform2D(new Vec2(C_RES.x/2+64,C_RES.y/2+32), new Vec2(256-64, 32)));
