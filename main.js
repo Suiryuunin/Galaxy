@@ -70,8 +70,11 @@ function placeAnchor(coords)
 
 
 // Inputs
+const keys = {};
 window.addEventListener("mousedown", (e) => {
     if (!E_main.running) return;
+
+    keys[e.button] = true;
 
     const coords = rr.toCanvasCoords(e.pageX, e.pageY);
     switch (e.button)
@@ -91,6 +94,40 @@ window.addEventListener("mousedown", (e) => {
             return;
         }
         case 2:
+        {
+            e.preventDefault();
+
+            placeAnchor(coords);
+            
+            return;
+        }
+    }
+});
+window.addEventListener("mouseup", (e) =>
+{
+    delete keys[e.button];
+});
+window.addEventListener("mousemove", (e) => {
+    if (!E_main.running) return;
+
+    const coords = rr.toCanvasCoords(e.pageX, e.pageY);
+    switch (true)
+    {
+        case keys[0]:
+        {
+            placeOrbiter(coords);
+
+            return;
+        }
+        case keys[1]:
+        {
+            e.preventDefault();
+
+            destroyAnchor(coords);
+
+            return;
+        }
+        case keys[2]:
         {
             e.preventDefault();
 
